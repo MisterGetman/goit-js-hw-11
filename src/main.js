@@ -39,8 +39,18 @@ const handleFormSubmit = e => {
           });
         }
       })
-      .catch(error => console.log(error))
-      .finally(() => loader.classList.toggle('hidden'));
+      .catch(error =>
+        iziToast.show({
+          title: '<b>Error:</b>',
+          message: error,
+          backgroundColor: 'tomato',
+          position: 'center',
+        })
+      )
+      .finally(() => {
+        loader.classList.toggle('hidden');
+        form.keyWord.value = '';
+      });
 
   renderPics();
 };
