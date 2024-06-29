@@ -9,13 +9,16 @@ import fetchPics from './js/pixabay-api';
 const form = document.querySelector('form');
 const gallery = document.querySelector('.gallery');
 const loader = document.querySelector('.loader-wrapper');
+const modal = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});
 
 const handleFormSubmit = e => {
   e.preventDefault();
   loader.classList.toggle('hidden');
   gallery.innerHTML = '';
   const keyWord = form.keyWord.value.trim();
-  if (keyWord === '') return;
 
   const renderPics = () =>
     fetchPics(keyWord)
@@ -24,11 +27,7 @@ const handleFormSubmit = e => {
         if (hits.length > 0) {
           gallery.insertAdjacentHTML('afterbegin', imgCardsTemplate(hits));
 
-          const modal = new SimpleLightbox('.gallery a', {
-            captionsData: 'alt',
-            captionDelay: 250,
-          });
-          modal.show();
+          modal.refresh();
         } else {
           iziToast.show({
             title: '<b>Oops!</b>',
@@ -39,14 +38,14 @@ const handleFormSubmit = e => {
           });
         }
       })
-      .catch(error =>
+      .catch(error => {
         iziToast.show({
           title: '<b>Error:</b>',
           message: error,
           backgroundColor: 'tomato',
           position: 'center',
-        })
-      )
+        });
+      })
       .finally(() => {
         loader.classList.toggle('hidden');
         form.keyWord.value = '';
